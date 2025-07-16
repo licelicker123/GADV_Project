@@ -11,6 +11,7 @@ public class PlaySoundOnTrigger2D : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Debug.Log("Player entered trigger");
             soundEffect.Play();
         }
     }

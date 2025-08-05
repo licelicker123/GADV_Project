@@ -2,32 +2,38 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float jumpForce = 12f;
-    public Transform groundCheck;
-    public float groundCheckRadius = 0.2f;
+    public Rigidbody2D playerRb;
+    public float moveSpeed;
+    public SpriteRenderer spriteRenderer;
+    public float jumpForce;
+
     public LayerMask groundLayer;
-
-    private Rigidbody2D rb;
     private bool isGrounded;
+    public Transform feetPosition;
+    public float groundCheckCircle;
 
-    void Start()
+    private void Update()
     {
-        rb = GetComponent<Rigidbody2D>(); // Get the Rigidbody2D from the Player
-    }
+        float input = Input.GetAxisRaw("Horizontal"); //a/d or left/right arrow
+        playerRb.velocity = new Vector2(input * moveSpeed, playerRb.velocity.y); // Move left/right
 
-    void Update()
-    {
-        float moveInput = Input.GetAxisRaw("Horizontal"); // A/D or Left/Right Arrow
-        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y); // Move left/right
-
-        // Check if touching the ground
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-
-        // Jump if on ground and Space is pressed
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        //flip character
+        if (input < 0)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            spriteRenderer.flipX = true;
+        }
+        else if (input > 0)
+        {
+            spriteRenderer.flipX = false;
+        }
+
+
+        isGrounded = Physics2D.OverlapCircle(feetPosition.position, groundCheckCircle, groundLayer); //create a circle at our feet to check if it overlaps with ground
+        //jump character
+        if (isGrounded == true && Input.GetButton("Jump"))
+        {
+            playerRb.velocity = Vector2.up * jumpForce;
         }
     }
 }
+

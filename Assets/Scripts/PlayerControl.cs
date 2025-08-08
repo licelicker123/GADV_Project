@@ -3,9 +3,9 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour
 {
     public Rigidbody2D playerRb;
-    public float moveSpeed;
+    private float moveSpeed = 10f;
     public SpriteRenderer spriteRenderer;
-    public float jumpForce;
+    private float jumpForce = 22f;
 
     public LayerMask groundLayer;
     private bool isGrounded;
@@ -30,9 +30,13 @@ public class PlayerControl : MonoBehaviour
 
         isGrounded = Physics2D.OverlapCircle(feetPosition.position, groundCheckCircle, groundLayer); //create a circle at our feet to check if it overlaps with ground
         //jump character
-        if (isGrounded == true && Input.GetButton("Jump"))
+        //if (isGrounded == true && Input.GetButton("Jump"))
+        //{
+          //  playerRb.velocity = Vector2.up * jumpForce;
+        //}
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            playerRb.velocity = Vector2.up * jumpForce;
+            playerRb.velocity = new Vector2(playerRb.velocity.x, jumpForce);
         }
     }
 }

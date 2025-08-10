@@ -7,7 +7,7 @@ using UnityEngine;
 public class DirectorAI : MonoBehaviour
 {
     public GameObject player;
-    public float speed;
+    public float speed = 15f;
     public float distanceBetween;
     private bool isFacingRight = true;
 
@@ -48,10 +48,12 @@ public class DirectorAI : MonoBehaviour
         {
             triggeredBySound = false;
             EnemyChase();
+            Debug.Log("Director is chasing player");
         }
         else if (triggeredBySound)
         {
             FollowsSound();
+            Debug.Log("Director is investigating the sound");
         }
         else
         {

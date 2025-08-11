@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class PlayerHiding : MonoBehaviour
 {
@@ -9,7 +8,7 @@ public class PlayerHiding : MonoBehaviour
     public MonoBehaviour movementScript;
 
     private HidingSpot currentHidingSpot;
-    public bool isHidden;
+    public bool isHidden = false;
     public GameObject eToHide;
     public GameObject eToLeave;
     private Vector3 originalPlayerPos;
@@ -42,6 +41,7 @@ public class PlayerHiding : MonoBehaviour
 
                 eToHide.SetActive(false);
                 eToLeave.SetActive(true);
+                isHidden = true;
             }
             else
             {
@@ -54,6 +54,7 @@ public class PlayerHiding : MonoBehaviour
 
                 eToHide.SetActive(true);
                 eToLeave.SetActive(false);
+                isHidden = false;
             }
         }
     }

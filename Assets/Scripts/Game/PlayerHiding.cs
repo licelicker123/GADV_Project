@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerHiding : MonoBehaviour
@@ -7,21 +5,24 @@ public class PlayerHiding : MonoBehaviour
     public GameObject player;
     public MonoBehaviour movementScript;
 
-    private HidingSpot currentHidingSpot;
+    private HidingSpot currentHidingSpot; 
     public bool isHidden = false;
-    public GameObject eToHide;
-    public GameObject eToLeave;
-    private Vector3 originalPlayerPos;
+    public GameObject eToHide; //ui
+    private Vector3 originalPlayerPos; //og player position before hiding
 
     // Start is called before the first frame update
     void Start()
     {
-            if (eToHide != null)
-            {
-                eToHide.SetActive(false); //hide ui at the start
-                eToLeave.SetActive(false);
-            }
+        if (eToHide != null)
+        {
+            eToHide.SetActive(false); // hide ui at the start
+        }
+        if (currentHidingSpot != null && currentHidingSpot.eToLeave != null)
+        {
+            currentHidingSpot.eToLeave.SetActive(false); //hide ui at the start
+        }
     }
+
 
     private void Update()
     {
@@ -32,28 +33,31 @@ public class PlayerHiding : MonoBehaviour
             {
                 currentHidingSpot.hidingSpotActivated = true;
                 Debug.Log("Player is currently hiding in the hiding spot");
-                originalPlayerPos = player.transform.position;
+                originalPlayerPos = player.transform.position; //store og player position
 
+                //disable all so wont affect director 
                 player.transform.position = currentHidingSpot.hidePosition  .position;
                 player.GetComponent<SpriteRenderer>().enabled = false;
                 player.GetComponent<Rigidbody2D>().simulated = false;
                 movementScript.enabled = false;
 
                 eToHide.SetActive(false);
-                eToLeave.SetActive(true);
+                currentHidingSpot.eToLeave.SetActive(true); //e to leave ui shows
                 isHidden = true;
             }
             else
             {
                 currentHidingSpot.hidingSpotActivated = false;
                 Debug.Log("Player has left the hiding spot");
-                player.transform.position = originalPlayerPos;
+                player.transform.position = originalPlayerPos; //return to og position
+
+                //enable all again, can be detected by director again
                 player.GetComponent<SpriteRenderer>().enabled = true;
                 player.GetComponent<Rigidbody2D>().simulated = true;
                 movementScript.enabled = true;
 
-                eToHide.SetActive(true);
-                eToLeave.SetActive(false);
+                eToHide.SetActive(true); //e to hide ui shows within range of hideable spot
+                currentHidingSpot.eToLeave.SetActive(false);
                 isHidden = false;
             }
         }

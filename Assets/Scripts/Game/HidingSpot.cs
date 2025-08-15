@@ -1,15 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HidingSpot : MonoBehaviour
 {
     public Transform hidePosition; //where player hides
     public bool hidingSpotActivated = false;
-    public bool nearAHidingSpot = false;
+    public bool nearAHidingSpot = false; //within range (in the box collider)
     public PlayerHiding player;
+    public GameObject eToLeave; //ui
 
+    private void Start()
+    {
+        if (eToLeave != null)
+            eToLeave.SetActive(false); //no ui at the start
+    }
 
+    // player and hiding location collides! 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
@@ -17,7 +22,7 @@ public class HidingSpot : MonoBehaviour
             player = collision.GetComponent<PlayerHiding>();
             nearAHidingSpot = true;
 
-            if (hidingSpotActivated)
+            if (hidingSpotActivated) 
             {
                 Debug.Log("Player is currently hiding in the hiding spot");
 
@@ -34,6 +39,7 @@ public class HidingSpot : MonoBehaviour
         
     }
 
+    // player and hiding location no longer collides
     private void OnTriggerExit2D(Collider2D collision)
     {
             if (collision.CompareTag("Player"))

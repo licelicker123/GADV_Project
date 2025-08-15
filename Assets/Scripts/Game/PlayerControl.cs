@@ -1,17 +1,19 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerControl : MonoBehaviour
 {
+    //move
     public Rigidbody2D playerRb;
     private float moveSpeed = 10f;
     private bool isMoving;
 
+    //player sprites control
     public SpriteRenderer spriteRenderer;
     public Sprite idleSprite;
     public Sprite moveSprite;
     public Sprite jumpSprite;
 
+    //jump
     private float jumpForce = 22f;
     public LayerMask groundLayer;
     private bool isGrounded;
@@ -20,12 +22,13 @@ public class PlayerControl : MonoBehaviour
 
     private void Start()
     {
+        //default idle sprite
         spriteRenderer.sprite = idleSprite;
     }
     private void Update()
     {
         float input = Input.GetAxisRaw("Horizontal"); //a/d or left/right arrow
-        playerRb.velocity = new Vector2(input * moveSpeed, playerRb.velocity.y); // Move left/right
+        playerRb.velocity = new Vector2(input * moveSpeed, playerRb.velocity.y); // move left/right
         isMoving = Mathf.Abs(input) > 0;
         //flip character
         if (input < 0)
@@ -37,27 +40,24 @@ public class PlayerControl : MonoBehaviour
             spriteRenderer.flipX = false;
         }
 
-
+        //jump
         isGrounded = Physics2D.OverlapCircle(feetPosition.position, groundCheckCircle, groundLayer); //create a circle at our feet to check if it overlaps with ground
-        //jump character
-        //if (isGrounded == true && Input.GetButton("Jump"))
-        //{
-          //  playerRb.velocity = Vector2.up * jumpForce;
-        //}
+
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             playerRb.velocity = new Vector2(playerRb.velocity.x, jumpForce);
         }
 
-        if (!isGrounded)
+        //sprite control
+        if (!isGrounded) //jump
         {
             spriteRenderer.sprite = jumpSprite;
         }
-        else if (isMoving)
+        else if (isMoving) //move
         {
             spriteRenderer.sprite = moveSprite;
         }
-        else
+        else //default
         {
             spriteRenderer.sprite = idleSprite;
         }

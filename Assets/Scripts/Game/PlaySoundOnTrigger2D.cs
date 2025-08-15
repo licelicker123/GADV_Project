@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlaySoundOnTrigger2D : MonoBehaviour
@@ -8,17 +6,18 @@ public class PlaySoundOnTrigger2D : MonoBehaviour
     public AudioSource soundEffect;
     public float soundRange = 10f;
 
+    //if player triggered the audio
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
             Debug.Log("Player entered trigger");
-            soundEffect.Play();
+            soundEffect.Play(); //play sfx
 
             GameObject enemy = GameObject.FindWithTag("Enemy");
             if (enemy != null)
             {
-                enemy.GetComponent<DirectorAI>().HearSound(transform.position);
+                enemy.GetComponent<DirectorAI>().HearSound(transform.position); //director is alerted of the sound!
             }
         }
     }

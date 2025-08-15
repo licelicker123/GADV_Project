@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 
 
 public class DirectorAI : MonoBehaviour
 {
     public GameObject player;
-    private Rigidbody2D playerRb;
+    private Rigidbody2D enemyRb;
     public float distanceBetween;
     private bool isFacingRight = true;
 
@@ -22,79 +20,108 @@ public class DirectorAI : MonoBehaviour
     //player chase
     private bool isChasing = false;
     public PlayerHiding playerHiding;
-    public float chaseRange;
+    public float chaseRange = 50f; //how far must player be to start chase
+    private bool pauseAfterLosingPlayer = false; //if player not seen by director midchase
+    public float pauseTime = 2f; //how long to stay near player location
+    private float pauseTimer = 0f;
 
     //sound trigger investigate
     private Vector3 soundPosition;
     private bool triggeredBySound = false;
-    public float triggeredBySoundDuration = 4f;
-    private float soundTimer = 0f;
+    public float triggeredBySoundDuration = 2.5f; 
+    private float soundTimer = 0f; 
+    private bool isInvestigating = false;
+    public float investigationTime = 2f; // how long to stay at sound location
+    private float investigationTimer = 0f;
+
 
     //speed control
-    private float patrolSpeed = 10f;
-    private float chaseSpeed = 20f;
-    private float investigateSpeed = 15f;
+    private float patrolSpeed = 60f;
+    private float chaseSpeed = 85f;
+    private float investigateSpeed = 75f;
     private float currentSpeed;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        playerRb = GetComponent<Rigidbody2D>();
-        currentPoint = pointB.transform;
+        enemyRb = GetComponent<Rigidbody2D>();
+        currentPoint = pointB.transform; 
         currentSpeed = patrolSpeed;
+        //debug checks
         if (player != null)
         {
             playerHiding = player.GetComponent<PlayerHiding>();
-            if (playerHiding == null)
-            {
-                Debug.LogError("PlayerHiding component is missing on the Player object!");
-            }
         }
         else
         {
-            Debug.LogError("Player reference is not assigned in DirectorAI!");
+            Debug.LogError("Player reference is not assigned in DirectorAI");
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        float distance = Vector2.Distance(transform.position, player.transform.position);
-        isChasing = distance < distanceBetween;
+        // checking if player in range first
+        float distanceToPlayer = Vector2.Distance(transform.position, player.transform.position);
+        bool playerInRange = distanceToPlayer < chaseRange;
+        bool playerVisible = !playerHiding.isHidden;
 
-        Debug.Log("Current speed:" + currentSpeed);
-
-        if (isChasing)
+        if (playerInRange && playerVisible)
         {
-            bool playerInRange = Vector2.Distance(transform.position, player.transform.position) < chaseRange;
-            if (!playerHiding.isHidden && playerInRange)
-            {
-                triggeredBySound = false;
-                currentSpeed = chaseSpeed;
-                EnemyChase();
-                Debug.Log("Director is chasing player");
-            }
-            else
-            {
-                currentSpeed = patrolSpeed;
-                Patrol();
-                Debug.Log("Director is patrolling the hallways...");
-            }
+            //chase player
+            triggeredBySound = false;
+            isInvestigating = false;
+            pauseAfterLosingPlayer = false;
+
+            currentSpeed = chaseSpeed;
+            EnemyChase();
+            Debug.Log("Director is chasing player!");
+            return;
         }
-        else if (triggeredBySound)
+        else if (playerInRange && !playerVisible && isChasing)
+        {
+            //if player hide mid chase
+            isChasing = false;
+            pauseAfterLosingPlayer = true;
+            pauseTimer = pauseTime;
+            enemyRb.velocity = Vector2.zero; //stop moving
+            Debug.Log("Director lost sight of player, waiting...");
+        }
+        //enemy pausing aft losing the player
+        if (pauseAfterLosingPlayer)
+        {
+            pauseTimer -= Time.deltaTime; //countdown timer till can move again
+            enemyRb.velocity = Vector2.zero;//stop moving
+
+            if (pauseTimer <= 0f)
+            {
+                pauseAfterLosingPlayer = false;
+                //randomly choose direction to patrol 
+                currentPoint = (Random.value < 0.5f) ? pointA.transform : pointB.transform;
+            }
+            return;
+        }
+
+
+        // follow sound
+        if (triggeredBySound)
         {
             currentSpeed = investigateSpeed;
             FollowsSound();
-            Debug.Log("Director is investigating the sound");
+            Debug.Log("Director is investigating sound.");
+            return;
+
         }
-        else
-        {
-            currentSpeed = patrolSpeed;
-            Patrol();
-            Debug.Log("Director is patrolling the hallways...");
-        }
+
+        //patrol
+        currentSpeed = patrolSpeed;
+        Patrol();
+        Debug.Log("Director is patrolling the hallways...");
     }
+
+
+
     private void Patrol()
     {
         //for director going back and forth
@@ -102,22 +129,22 @@ public class DirectorAI : MonoBehaviour
         if (patrolCooldown > 0)
         {
             patrolCooldown -= Time.deltaTime;
-            playerRb.velocity = Vector2.zero;
+            enemyRb.velocity = Vector2.zero;
             return; // wait before switching patrol direction
         }
 
         Vector2 targetPos = new Vector2(currentPoint.position.x, transform.position.y);
         Vector2 newPos = Vector2.MoveTowards(transform.position, targetPos, currentSpeed * Time.deltaTime);
-        playerRb.MovePosition(newPos);
+        enemyRb.MovePosition(newPos);
         float direction = Mathf.Sign(currentPoint.position.x - transform.position.x);
 
-        // Flip if needed
+        //flip !
         if ((direction > 0 && !isFacingRight) || (direction < 0 && isFacingRight))
         {
             Flip();
         }
 
-        // Switch to the other point if close enough
+        // switch to patrol to other point if its close
         if (Vector2.Distance(transform.position, currentPoint.position) < switchThreshold)
         {
             currentPoint = (currentPoint == pointA.transform) ? pointB.transform : pointA.transform;
@@ -125,17 +152,20 @@ public class DirectorAI : MonoBehaviour
         }
     }
 
+    //chase function
     private void EnemyChase()
     {
         if (playerHiding != null && !playerHiding.isHidden)
         {
+            //move in players direction
             Vector2 targetPos = new Vector2(player.transform.position.x, transform.position.y);
             Vector2 newPos = Vector2.MoveTowards(transform.position, targetPos, currentSpeed * Time.deltaTime);
-            playerRb.MovePosition(newPos);
+            enemyRb.MovePosition(newPos);
 
             float direction = Mathf.Sign(player.transform.position.x - transform.position.x);
+            isChasing = true;
 
-            // Flip if needed
+            // flip!
             if ((direction > 0 && !isFacingRight) || (direction < 0 && isFacingRight))
             {
                 Flip();
@@ -143,6 +173,8 @@ public class DirectorAI : MonoBehaviour
         }
 
     }
+
+    //can hear sound
     public void HearSound(Vector3 position)
     {
         soundPosition = position;
@@ -150,32 +182,42 @@ public class DirectorAI : MonoBehaviour
         soundTimer = triggeredBySoundDuration;
     }
 
+    //follow sound function aft sound is triggered
     private void FollowsSound()
     {
-        if (triggeredBySound)
+        soundTimer -= Time.deltaTime;
+
+        float distanceToSound = Vector2.Distance(transform.position, soundPosition);
+
+        if (distanceToSound > 0.2f)
         {
-            soundTimer -= Time.deltaTime;
-
-            // Move toward the sound source
             Vector2 newPosition = Vector2.MoveTowards(transform.position, soundPosition, currentSpeed * Time.deltaTime);
-            playerRb.MovePosition(newPosition);
+            enemyRb.MovePosition(newPosition);
 
-            // Flip if necessary
+            // flip!
             if ((soundPosition.x > transform.position.x && !isFacingRight) ||
                 (soundPosition.x < transform.position.x && isFacingRight))
             {
                 Flip();
             }
-
-            if (soundTimer <= 0f)
-            {
-                triggeredBySound = false;
-            }
-            return; // Don't do anything else while chasing sound
+        }
+        else
+        {
+            // investigate sound... pause for a while
+            isInvestigating = true;
+            investigationTimer = investigationTime;
         }
 
+        // done investigating, continue patrolling
+        if (soundTimer <= 0f && !isInvestigating)
+        {
+            triggeredBySound = false;
+            currentPoint = (Random.value < 0.5f) ? pointA.transform : pointB.transform;
+        }
     }
 
+
+    // flip function
     private void Flip()
     {
         isFacingRight = !isFacingRight;

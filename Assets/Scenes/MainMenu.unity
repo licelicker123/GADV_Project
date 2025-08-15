@@ -149,14 +149,14 @@ RectTransform:
   m_GameObject: {fileID: 282313348}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -98.42065}
-  m_LocalScale: {x: 514.5084, y: 514.5084, z: 514.5084}
+  m_LocalScale: {x: 305.31445, y: 305.31445, z: 305.31445}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 306890250}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 665, y: -428}
+  m_AnchoredPosition: {x: 377, y: -251}
   m_SizeDelta: {x: 2.5599976, y: 1.4400024}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &282313350
@@ -224,6 +224,7 @@ GameObject:
   - component: {fileID: 306890248}
   - component: {fileID: 306890247}
   - component: {fileID: 306890251}
+  - component: {fileID: 306890252}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -328,6 +329,103 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7b97a697d2363445a5438f0a2380f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgAudio: {fileID: 306890252}
+--- !u!82 &306890252
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 306890246}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: e7f065308504bae40b264769bd00a8fd, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &312694052
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,14 +706,14 @@ RectTransform:
   m_GameObject: {fileID: 827247112}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -475.99997}
-  m_LocalScale: {x: 2.558338, y: 2.558338, z: 2.558338}
+  m_LocalScale: {x: 1.427706, y: 1.427706, z: 1.427706}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 306890250}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 375.00006, y: 138}
+  m_AnchoredPosition: {x: 187, y: 106}
   m_SizeDelta: {x: 160, y: 80.91}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &827247114
@@ -1026,7 +1124,7 @@ Transform:
   m_GameObject: {fileID: 1980551945}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.45, y: -2.61, z: 94.2}
+  m_LocalPosition: {x: 8.45, y: -2.61, z: 93.62}
   m_LocalScale: {x: 11.4, y: 11.4, z: 11.4}
   m_ConstrainProportionsScale: 0
   m_Children: []

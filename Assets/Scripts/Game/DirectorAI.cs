@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 
-
-
 public class DirectorAI : MonoBehaviour
 {
     public GameObject player;
@@ -36,11 +34,15 @@ public class DirectorAI : MonoBehaviour
 
 
     //speed control
-    private float patrolSpeed = 60f;
-    private float chaseSpeed = 85f;
-    private float investigateSpeed = 75f;
+    private float patrolSpeed = 40f;
+    private float chaseSpeed = 70f;
+    private float investigateSpeed = 60f;
     private float currentSpeed;
 
+    //detection ui
+    public GameObject eyeClosed;
+    public GameObject eyeInvestigating;
+    public GameObject eyeChasing;
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +50,10 @@ public class DirectorAI : MonoBehaviour
         enemyRb = GetComponent<Rigidbody2D>();
         currentPoint = pointB.transform; 
         currentSpeed = patrolSpeed;
+        eyeClosed.SetActive(true);
+        eyeInvestigating.SetActive(false);
+        eyeChasing.SetActive(false);
+
         //debug checks
         if (player != null)
         {
@@ -74,6 +80,10 @@ public class DirectorAI : MonoBehaviour
             isInvestigating = false;
             pauseAfterLosingPlayer = false;
 
+            eyeClosed.SetActive(false);
+            eyeInvestigating.SetActive(false);
+            eyeChasing.SetActive(true);
+
             currentSpeed = chaseSpeed;
             EnemyChase();
             Debug.Log("Director is chasing player!");
@@ -83,6 +93,11 @@ public class DirectorAI : MonoBehaviour
         {
             //if player hide mid chase
             isChasing = false;
+
+            eyeClosed.SetActive(true);
+            eyeInvestigating.SetActive(false);
+            eyeChasing.SetActive(false);
+
             pauseAfterLosingPlayer = true;
             pauseTimer = pauseTime;
             enemyRb.velocity = Vector2.zero; //stop moving
@@ -108,6 +123,11 @@ public class DirectorAI : MonoBehaviour
         if (triggeredBySound)
         {
             currentSpeed = investigateSpeed;
+
+            eyeClosed.SetActive(false);
+            eyeInvestigating.SetActive(true);
+            eyeChasing.SetActive(false);
+
             FollowsSound();
             Debug.Log("Director is investigating sound.");
             return;
@@ -116,6 +136,11 @@ public class DirectorAI : MonoBehaviour
 
         //patrol
         currentSpeed = patrolSpeed;
+
+        eyeClosed.SetActive(true);
+        eyeInvestigating.SetActive(false);
+        eyeChasing.SetActive(false);
+
         Patrol();
         Debug.Log("Director is patrolling the hallways...");
     }

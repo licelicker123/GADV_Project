@@ -1,70 +1,60 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class InteractableObject : MonoBehaviour
 {
-    public bool hasItem; // if the object has smt the player can find or is just empty
-    public GameObject haveNothing; //ui
-    public GameObject keyFound; //ui
+    public bool hasItem; // if the object has something
+    public GameObject haveNothing; // UI
+    public GameObject keyFound; // UI
     public PlayerInteract player;
+    public GameObject key; // key UI icon
 
     private void Start()
     {
-        if (haveNothing != null)
-        {
-            haveNothing.SetActive(false);
-        }
-
-        if (keyFound != null)
-        {
-            keyFound.SetActive(false);
-        }
+        haveNothing?.SetActive(false);
+        keyFound?.SetActive(false);
+        key?.SetActive(false);
     }
 
     public void Interact()
     {
         if (hasItem)
         {
-            Debug.Log("Player has found a key in the object!");
-            if (haveNothing != null)
-            {
-                haveNothing.SetActive(false);
-            }
-            if (keyFound != null)
-            {
-                keyFound.SetActive(true);
-                player.hasKey = true; //key ui appears
-            }
-                
+            Debug.Log("Player has found a key!");
 
+            // Hide "nothing" UI
+            haveNothing?.SetActive(false);
+
+            // Show "key found" UI
+            keyFound?.SetActive(true);
+
+            // Update Player inventory
+            player.hasKey = true;
+
+            // ✅ Show key permanently after found
+            key?.SetActive(true);
+
+            // Mark this object as empty after
             hasItem = false;
         }
         else
         {
             Debug.Log("Player found nothing...");
-            if (haveNothing != null)
-            {
-                haveNothing.SetActive(true); //nothing ui appears
-            }
-            if (keyFound != null)
-            {
-                keyFound.SetActive(false);
-            }
+
+            // Show nothing UI
+            haveNothing?.SetActive(true);
+
+            // Hide “key found” UI
+            keyFound?.SetActive(false);
         }
     }
 
-    //out of range, both ui wont show unless press q again
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            if (haveNothing != null)
-            {
-                haveNothing.SetActive(false);
-            }
-            if (keyFound != null)
-            {
-                keyFound.SetActive(false);
-            }
+            // Hide both popups when player leaves range
+            haveNothing?.SetActive(false);
+            keyFound?.SetActive(false);
         }
     }
 }

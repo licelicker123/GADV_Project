@@ -16,4 +16,8 @@ public class MainMenuScreen: MonoBehaviour
     {
         SceneManager.LoadScene("Game"); //press play to start game 
     }
+    public void TutorialButton()
+    {
+        SceneManager.LoadScene("Tutorial");
+    }
 }

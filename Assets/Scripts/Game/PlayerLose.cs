@@ -5,11 +5,16 @@ using UnityEngine.SceneManagement;
 public class PlayerLose : MonoBehaviour
 {
     public PlayJumpscare playJumpscare;
+    public GameObject player;
+    public MonoBehaviour movementScript;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
+            player.GetComponent<SpriteRenderer>().enabled = true;
+            player.GetComponent<Rigidbody2D>().simulated = false;
+            movementScript.enabled = false;
             playJumpscare.Jumpscare();
             StartCoroutine(GameOverScreen()); 
 

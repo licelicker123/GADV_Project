@@ -29,7 +29,7 @@ public class PlayJumpscare: MonoBehaviour
         if (clip != null)
         {
             videoPlayer.clip = clip;
-            videoPlayer.Play(); //play video 
+            videoPlayer.Play(); //play video
 
             if (jumpscareSfx != null)
             {
